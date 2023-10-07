@@ -6,6 +6,18 @@ costos_A = []
 costos_B = []
 
 
+def graficar(x, y, theta):
+    plt.scatter(x[:, 1], x[:, 2], c=y)
+    margin1 = (max(x[:, -2]) - min(x[:, -2])) * 0.2
+    margin2 = (max(x[:, -1]) - min(x[:, -1])) * 0.2
+    x1 = np.arange(min(x[:, -2]) - margin1, max(x[:, -2]) + margin1, 0.01)
+    x2 = -(theta[0] / theta[2] + theta[1] / theta[2] * x1)
+    plt.plot(x1, x2, c="red", linewidth=2)
+    plt.xlim(x[:, -2].min() - margin1, x[:, -2].max() + margin1)
+    plt.ylim(x[:, -1].min() - margin2, x[:, -1].max() + margin2)
+    plt.show()
+
+
 def calc_grad(X, Y, theta):
     """Calcula el gradiente de la pérdida con respecto a tita."""
     m, n = X.shape
@@ -20,16 +32,10 @@ def calc_grad(X, Y, theta):
     probs = 1.0 / (1 + np.exp(margins))
     grad = -(1.0 / m) * (X.T.dot(probs * Y)) + lambda_value
 
-    # lambda_value = 0.001
-    # # Agregar término de regularización L2
-    # grad_regularization = (lambda_value / m) * theta
-    # grad_regularization[0] = 0  # No regularizar el término de sesgo (intercept)
-    # grad += grad_regularization
-
     return grad
 
 
-def logistic_regression(X, Y, costos):
+def logistic_regression(X, Y):
     """Entrena un modelo de regresión logística."""
     m, n = X.shape
     theta = np.zeros(n)
@@ -43,8 +49,6 @@ def logistic_regression(X, Y, costos):
         grad = calc_grad(X, Y, theta)
         theta = theta - learning_rate * grad
 
-        # costos.append(np.linalg.norm(prev_theta - theta))
-
         if i % 10000 == 0:
             # print('Terminadas %d iteraciones' % i)
             print(f"ERROR: {np.linalg.norm(prev_theta - theta)}")
@@ -53,26 +57,21 @@ def logistic_regression(X, Y, costos):
             print("Convergencia en %d iteraciones" % i)
             print(f"ERROR: {np.linalg.norm(prev_theta - theta)}")
             break
-
-    return
+    return theta
 
 
 def main():
     print("==== Entrenando modelo en dataset A ====")
     Xa, Ya = util.load_csv("data/ds1_a.csv", add_intercept=True)
-    logistic_regression(Xa, Ya, costos_A)
+    theta = logistic_regression(Xa, Ya)
 
-    # plt.clf()
-    # plt.plot(costos_A)
-    # plt.show()
+    graficar(Xa, Ya, theta)
 
     print("\n==== Entrenando modelo en dataset B ====")
     Xb, Yb = util.load_csv("data/ds1_b.csv", add_intercept=True)
-    logistic_regression(Xb, Yb, costos_B)
+    theta = logistic_regression(Xb, Yb)
 
-    # plt.clf()
-    # plt.plot(costos_B)
-    # plt.show()
+    graficar(Xb, Yb, theta)
 
 
 if __name__ == "__main__":
