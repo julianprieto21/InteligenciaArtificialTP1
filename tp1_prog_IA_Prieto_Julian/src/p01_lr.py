@@ -2,8 +2,12 @@ import util
 import numpy as np
 import matplotlib.pyplot as plt
 
-costos_A = []
-costos_B = []
+
+def escalar(X):
+    media = np.mean(X)
+    std = np.std(X)
+    X_escalada = (X - media) / std
+    return X_escalada
 
 
 def graficar(x, y, theta):
@@ -30,7 +34,8 @@ def calc_grad(X, Y, theta):
 
     margins = Y * X.dot(theta)
     probs = 1.0 / (1 + np.exp(margins))
-    grad = -(1.0 / m) * (X.T.dot(probs * Y)) + lambda_value
+    grad = -(1.0 / m) * (X.T.dot(probs * Y))  # + lambda_value
+    # grad = - 1 / m * (probs * Y) @ X
 
     return grad
 
@@ -40,7 +45,6 @@ def logistic_regression(X, Y):
     m, n = X.shape
     theta = np.zeros(n)
     learning_rate = 10
-
     i = 0
 
     while True:
@@ -57,6 +61,7 @@ def logistic_regression(X, Y):
             print("Convergencia en %d iteraciones" % i)
             print(f"ERROR: {np.linalg.norm(prev_theta - theta)}")
             break
+        # learning_rate = 1 / i**2
     return theta
 
 
@@ -65,12 +70,14 @@ def main():
     Xa, Ya = util.load_csv("data/ds1_a.csv", add_intercept=True)
     theta = logistic_regression(Xa, Ya)
 
+    # Xa = escalar(Xa)
     graficar(Xa, Ya, theta)
 
     print("\n==== Entrenando modelo en dataset B ====")
     Xb, Yb = util.load_csv("data/ds1_b.csv", add_intercept=True)
     theta = logistic_regression(Xb, Yb)
 
+    # Xb = escalar(Xb)
     graficar(Xb, Yb, theta)
 
 
