@@ -88,7 +88,7 @@ def main():
     theta = logistic_regression(Xa, Ya)
 
     # Xa = escalar(Xa)
-    graficar(Xa, Ya, theta)
+    # graficar(Xa, Ya, theta)
 
     print("\n==== Entrenando modelo en dataset B ====")
     Xb, Yb = util.load_csv("data/ds1_b.csv", add_intercept=True)
@@ -97,7 +97,7 @@ def main():
     theta = logistic_regression(Xb, Yb)
 
     # Xb = escalar(Xb)
-    graficar(Xb, Yb, theta)
+    # graficar(Xb, Yb, theta)
 
 
 if __name__ == "__main__":
