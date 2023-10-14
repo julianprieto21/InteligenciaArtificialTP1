@@ -141,3 +141,14 @@ plt.title(
 plt.imshow(new_image)
 plt.axis("off")
 plt.show()
+
+## Calculo del factor de compresión
+
+resolucion_imagen = 512 * 512
+bits_per_pixel = 3 * np.log2(256)
+bits_per_pixel_comprimida = np.log2(16)
+
+bits_original = resolucion_imagen * bits_per_pixel
+bits_comprimida = resolucion_imagen * bits_per_pixel_comprimida
+
+factor = bits_original / bits_comprimida  # = 6
